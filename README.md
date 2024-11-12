@@ -12,3 +12,5 @@ AI Response Bot, an AI response service. This Service is built to provide AI LLM
   the AI LLM from smartchat from its views and make it available on API. So
   smartchat can use AIRBOT Service to handle the query’s from user
   asynchronously.
+
+## Objectives
