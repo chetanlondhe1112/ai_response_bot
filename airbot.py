@@ -32,7 +32,7 @@ config_status,config = aic.load_config(filepath=config_path)
 airbotllm = airbotllm(llmconfig=config['airbotllm'])
 
 #Prompts
-smartchat_prompt_path = os.path.join(script_dir,"prompts\smartchat_prompts.toml")
+smartchat_prompt_path = os.path.join(script_dir,"prompts/smartchat_prompts.toml")
 _,smartchatapp_prompts = config = aic.load_config(filepath=smartchat_prompt_path)
 
 smartchatapp = aic.SmartchatModules(llmmodel=airbotllm,smartchatprompts=smartchatapp_prompts)
