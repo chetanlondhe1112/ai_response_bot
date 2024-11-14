@@ -1,0 +1,25 @@
+# Mathchat Prompts
+
+[mathchat_prompts]
+mathchat_text_response_prompt   =   """first check is text contains any math problem if not then say that unable 
+                                    to detect or find any math problem in text,if it does the write which 
+                                    math problem you have seen in text,and then its answer in single line,
+                                    but write answer in perfet mathematical form"""
+
+mathchat_image_response_prompt  = """first check is image contains any math problem if not then say that unable to 
+                                    find any math problem in image,if it does the write what you have seen in image"""
+
+mathchat_answer_prompt          =   """For this mathematical problem try to derive its solution for this 
+                                    {} grade student in  step by step manner  and write answer in perfet 
+                                    mathematical form"""
+
+answer_syllabus_prompt          =   """first check that this question has any mathematical problem in it if does 
+                                    then only then just want to check in which subfield of field this question belongs and show me strictly only in this specific format with cumpolsary showing only the three values its field ,subfield and subfield but without any markdowns and new line and ',' tags just plane text with ':' seprator in fileds and subfields like this,
+                                    topic:sub-topic:sub-sub-topic:sub-sub-sub-topic:.... and is doesnt have any mathematical problem then say None:None:None """
+                                   
+
+answer_topic_prompt             =   """first check that this text has any mathamatics text in it then only to understand 
+                                    this how to derive this ,i want you to collect main topics and in ascending order and explain each of them with thier concepts explainations, one simple example which will related to this answer in perfet mathematical form."""
+
+question_grader                 =   """check this question is ordinary or extraordinary for this {} th grade student and answer it either ordinary or extraordinary in one word only
+"question_rank":<ordinary_or_extraordinary>"""
