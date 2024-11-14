@@ -26,7 +26,7 @@ app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
 # Load Config path
 script_dir = os.getcwd()
 print(script_dir)
-config_path = os.path.join(script_dir,"conf\conf.toml")
+config_path = os.path.join(script_dir,"conf/conf.toml")
 config_status,config = aic.load_config(filepath=config_path)
 
 airbotllm = airbotllm(llmconfig=config['airbotllm'])
