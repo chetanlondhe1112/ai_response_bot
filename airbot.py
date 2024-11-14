@@ -1,4 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,File,Form,UploadFile
+import os
+import airbot_integration_core as aic
+from llm_algo.llm_models import airbotllm
+import json
 
 app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
     description="""
@@ -19,10 +23,29 @@ app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
         "email": "chetanlondhe1112@gmail.com",
     })
 
-@app.get("/textmaster")
-async def textmaster():
-    return {"hello world"}
+# Load Config path
+script_dir = os.getcwd()
+print(script_dir)
+config_path = os.path.join(script_dir,"conf\conf.toml")
+config_status,config = aic.load_config(filepath=config_path)
 
-@app.get("/imagemaster")
+airbotllm = airbotllm(llmconfig=config['airbotllm'])
+
+#Prompts
+smartchat_prompt_path = os.path.join(script_dir,"prompts\smartchat_prompts.toml")
+_,smartchatapp_prompts = config = aic.load_config(filepath=smartchat_prompt_path)
+
+smartchatapp = aic.SmartchatModules(llmmodel=airbotllm,smartchatprompts=smartchatapp_prompts)
+
+@app.post("/textmaster/")
+async def textmaster(text_question : str = Form(...), requestor : str = Form(...), arguments : str = Form(...)):
+    print(text_question)
+    if requestor == "smartchat":
+        arguments = json.loads(arguments)
+        result = await smartchatapp.modules(text_input=text_question,image_input=None,class_name=arguments['class_name'],module_name=arguments['module_name'],request_format="text")
+        return {"result":result}
+    
+
+@app.get("/imagemaster/")
 async def imagemaster(item_id : int):
     return {"item_id":item_id}
