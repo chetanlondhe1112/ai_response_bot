@@ -1,0 +1,11 @@
+[Unit]
+Description=AIRBOT : AI Response BOT Service API's
+After=network.target
+
+[Service]
+WorkingDirectory=/projects/chetan/airbot_service/ai_response_bot
+ExecStart=/usr/local/bin/uvicorn airbot:app --host 0.0.0.0 --port 8501
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
