@@ -1,7 +1,6 @@
-from fastapi import FastAPI,File,Form,UploadFile
+from fastapi import FastAPI,Form
 import os
-import airbot_integration_core as aic
-from llm_algo.llm_models import airbotllm
+import integrations_core as aic
 import json
 
 app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
@@ -27,15 +26,41 @@ app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
 script_dir = os.getcwd()
 print(script_dir)
 config_path = os.path.join(script_dir,"conf/conf.toml")
-config_status,config = aic.load_config(filepath=config_path)
-
-airbotllm = airbotllm(llmconfig=config['airbotllm'])
-
 #Prompts
 smartchat_prompt_path = os.path.join(script_dir,"prompts/smartchat_prompts.toml")
-_,smartchatapp_prompts = config = aic.load_config(filepath=smartchat_prompt_path)
+chatbot_prompt_path = os.path.join(script_dir,"prompts/chatbot_prompts.toml")
 
+config_loader = aic.ConfigLoader()
+config=config_loader.get_config(config_path)
+smartchatapp_prompts  = config_loader.get_config(smartchat_prompt_path)
+chatbot_prompts  =  config_loader.get_config(chatbot_prompt_path)
+
+llm_conf = config['airbotllm']
+pinecone_conf = config['pinecone']
+
+airbotllm = aic.airbotllm(llm_config=llm_conf,vectordb_config=pinecone_conf)
 smartchatapp = aic.SmartchatModules(llmmodel=airbotllm,smartchatprompts=smartchatapp_prompts)
+chatbotapp = aic.ChatBotHandler(llm_config=llm_conf,vectordb_config=pinecone_conf)
+    
+
+@app.post("/login/")
+async def login():
+    return {"result":''}
+
+@app.post("/registration/")
+async def registration():
+    return {"result":''}
+
+@app.post("/chatbot/")
+async def chatbot(text_question : str = Form(...), requestor : str = Form(...)):
+    
+    result = await chatbotapp.chatbot_response(text_content=text_question,user=requestor,prompt="Act Like a chatbot and answer users query in deapth, and provide the relatedf citations like refernece links at end")
+    return {"result":result}
+
+@app.post("/upsertcontext/")
+async def upsertcontext(text:str=Form(...),user:str=Form(...)):
+    result = await chatbotapp.upsert_content_to_vectordb(text_content=text,user=user)
+    return {"result":result}
 
 @app.post("/textmaster/")
 async def textmaster(text_question : str = Form(...), requestor : str = Form(...), arguments : str = Form(...)):
@@ -44,7 +69,6 @@ async def textmaster(text_question : str = Form(...), requestor : str = Form(...
         arguments = json.loads(arguments)
         result = await smartchatapp.modules(text_input=text_question,image_input=None,class_name=arguments['class_name'],module_name=arguments['module_name'],request_format="text")
         return {"result":result}
-    
 
 @app.get("/imagemaster/")
 async def imagemaster(item_id : int):

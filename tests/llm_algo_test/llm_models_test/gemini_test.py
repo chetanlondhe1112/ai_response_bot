@@ -1,5 +1,5 @@
 import unittest
-from llm_algo import AskGemini
+from llm_integration import AskGemini
 
 class AskGeminiTest(unittest.TestCase):
     async def testsetup(self):

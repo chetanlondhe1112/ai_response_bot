@@ -1,0 +1,3 @@
+[chatbot_prompts]
+chatbot_text_response_prompt   =   """you have unswer their queries in deapth, and also ask them some relevent questions and related news appering in market,"""
+

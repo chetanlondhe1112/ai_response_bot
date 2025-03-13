@@ -23,3 +23,4 @@ answer_topic_prompt             =   """first check that this text has any matham
 
 question_grader                 =   """check this question is ordinary or extraordinary for this {} th grade student and answer it either ordinary or extraordinary in one word only
 "question_rank":<ordinary_or_extraordinary>"""
+
