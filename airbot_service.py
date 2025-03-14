@@ -1,4 +1,5 @@
 from fastapi import FastAPI,Form
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import integrations_core as aic
 import json
@@ -22,9 +23,22 @@ app = FastAPI(title="AIRBOT : AI Response BOT Service API's",
         "email": "chetanlondhe1112@gmail.com",
     })
 
+# Define allowed origins
+origins = [
+    "http://127.0.0.1:8005",  # Replace with specific allowed origins
+]
+
+# Add CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allow specified origins
+    allow_credentials=True,  # Allow credentials (if required)
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
 # Load Config path
 script_dir = os.getcwd()
-print(script_dir)
 config_path = os.path.join(script_dir,"conf/conf.toml")
 #Prompts
 smartchat_prompt_path = os.path.join(script_dir,"prompts/smartchat_prompts.toml")
@@ -41,7 +55,9 @@ pinecone_conf = config['pinecone']
 airbotllm = aic.airbotllm(llm_config=llm_conf,vectordb_config=pinecone_conf)
 smartchatapp = aic.SmartchatModules(llmmodel=airbotllm,smartchatprompts=smartchatapp_prompts)
 chatbotapp = aic.ChatBotHandler(llm_config=llm_conf,vectordb_config=pinecone_conf)
-    
+
+
+
 
 @app.post("/login/")
 async def login():
@@ -55,6 +71,7 @@ async def registration():
 async def chatbot(text_question : str = Form(...), requestor : str = Form(...)):
     
     result = await chatbotapp.chatbot_response(text_content=text_question,user=requestor,prompt="Act Like a chatbot and answer users query in deapth, and provide the relatedf citations like refernece links at end")
+    print({"result":result})
     return {"result":result}
 
 @app.post("/upsertcontext/")
