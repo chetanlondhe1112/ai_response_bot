@@ -7,3 +7,7 @@
 ## APP Integration Document
 
 * [app\_integration\_documentation.md](app-integration-document/app_integration_documentation.md.md)
+
+***
+
+* [Documentations](documentations.md)
